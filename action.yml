@@ -1,0 +1,62 @@
+name: 'Zip Release'
+author: 'TheDoctor0'
+branding:
+  icon: 'archive'
+  color: 'yellow'
+description: 'Make an archive from specified files and directories as workflow action'
+inputs:
+  filename:
+    description: 'Filename for archive'
+    required: true
+    default: 'install_assets.zip'
+  # add this to env
+  filename_deploy:
+    description: 'Filename for deploy within deploy'
+    required: true
+    default: 'install_assets_deploy.zip'
+  path:
+    description: 'Base path for archive files'
+    default: '.'
+    required: false
+  directory:
+    description: 'Working directory before zipping'
+    default: '.'
+    required: false
+  exclusions:
+    description: 'List of excluded files / directories'
+    default: ''
+    required: false
+  # add this to env
+  inclusions:
+    description: 'List of included files / directories'
+    default: ''
+    required: false   
+  recursive_exclusions:
+    description: 'List of excluded files / directories with recursive wildcards (only applies on Windows with `zip` type)'
+    default: ''
+    required: false
+  type:
+    description: 'Tool to use for archiving'
+    default: 'zip'
+    required: false
+  # add this to env
+  github_context:
+    description: 'metadata'
+    default: ''
+    required: true  
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      env:
+        INPUT_FILENAME: ${{ inputs.filename }}
+        INPUT_FILENAME_DEPLOY: ${{ inputs.filename_deploy }} # new
+        INPUT_PATH: ${{ inputs.path }}
+        INPUT_DIRECTORY: ${{ inputs.directory }}
+        INPUT_EXCLUSIONS: ${{ inputs.exclusions }}
+        INPUT_INCLUSIONS: ${{ inputs.inclusions }} # new
+        INPUT_RECURSIVE_EXCLUSIONS: ${{ inputs.recursive_exclusions }}
+        INPUT_TYPE: ${{ inputs.type }}
+        INPUT_GITHUB_CONTEXT: ${{ inputs.github_context }} # new
+      run: $GITHUB_ACTION_PATH/entrypoint.sh
+
